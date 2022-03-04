@@ -1,0 +1,27 @@
+Package: lifemapR
+Title: Lifemap explorer and mapper for R
+Version: 1.0
+Authors@R: c(
+    person(given = "Damien M.",
+           family = "de Vienne",
+           role = c("aut", "cre"),
+           email = "cassandre.heritier--tellier@etu.univ-lyon1.fr"),
+    person(given = "Cassandre",
+           family = "Heritier--Tellier",
+           role = "aut",
+           email = "cassandre.heritier--tellier@etu.univ-lyon1.fr"),
+    person(given = "Thomas",
+           family = "Catel",
+           role = "aut",
+           email = "thomas.catel@etu.univ-lyon1.fr"),
+    person(given = "Joe",
+           family = "Ueda",
+           role = "aut",
+           email = "joe.ueda@etu.univ-lyon1.fr"))
+License: GPL-3
+Description: This package allows using Lifemap as a base map and representing any type of data on top of it.
+Encoding: UTF-8
+LazyData: true
+Imports: leaflet, jsonlite, utils, curl
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.2
