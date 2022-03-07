@@ -4,22 +4,30 @@
 \alias{taxid2map}
 \title{taxid2map}
 \usage{
-taxid2map(taxid, verbose = TRUE)
+taxid2map(
+  taxid,
+  remove.missing = TRUE,
+  remove.duplicates = TRUE,
+  verbose = TRUE
+)
 }
 \arguments{
 \item{taxid}{either a unique taxid or a vector of taxids for which to
 retrieve coordinates}
 
-\item{verbose}{Boolean. Should warnings be written if case of duplicated or invalid
+\item{remove.missing}{Logical. Should taxids that were not found
+be removed from the output. Default to TRUE.}
+
+\item{remove.duplicates}{Logical. Should duplicated taxids (if any)
+be removed from the output. Default to TRUE.}
+
+\item{verbose}{Logical. Should warnings be written if case of duplicated or invalid
 taxids. Default to TRUE.
 retrieve coordinates}
 }
 \value{
-A list with two components:
-coo: a dataframe with information for the taxid(s) requested:
-lat, long, scientific name, zoom at which the taxa is visible, and
-number of descendants of this taxa.
-missing: a
+A data frame with lon, lat and zoom, with the first column
+in the same order as the input taxid.
 }
 \description{
 This function queries the Lifemap database to retrieve

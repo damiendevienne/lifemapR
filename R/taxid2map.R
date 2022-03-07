@@ -5,15 +5,16 @@
 #'
 #' @param taxid either a unique taxid or a vector of taxids for which to
 #' retrieve coordinates
-#' @param verbose Boolean. Should warnings be written if case of duplicated or invalid 
+#' @param remove.missing Logical. Should taxids that were not found
+#' be removed from the output. Default to TRUE.
+#' @param remove.duplicates Logical. Should duplicated taxids (if any)
+#' be removed from the output. Default to TRUE.
+#' @param verbose Logical. Should warnings be written if case of duplicated or invalid 
 #' taxids. Default to TRUE.
 #' retrieve coordinates
 #'
-#' @return A list with two components: 
-#' coo: a dataframe with information for the taxid(s) requested: 
-#' lat, long, scientific name, zoom at which the taxa is visible, and 
-#' number of descendants of this taxa.
-#' missing: a 
+#' @return A data frame with lon, lat and zoom, with the first column 
+#' in the same order as the input taxid.
 #'
 #' @importFrom jsonlite fromJSON
 #'
@@ -21,9 +22,12 @@
 #'
 #' @examples taxid2map(c(2,9443,2087))
 
-taxid2map<-function(taxid, verbose=TRUE) {
-  if (sum(duplicated(taxid))>0 & verbose) cat("Some taxids were duplicated. They ware removed.\n")
-  taxids<-as.character(unique(taxid)) # change to characters and remove duplicates
+taxid2map<-function(taxid, remove.missing=TRUE, remove.duplicates=TRUE, verbose=TRUE) {
+  if (sum(duplicated(taxid))>0) {
+    if (verbose) cat("Warning! Some taxids are duplicated.\n")
+    if (remove.duplicates) taxid<-unique(taxid)
+  }
+  taxids<-as.character(taxid) # change to characters and remove duplicates
   coordinates<-NULL # coordinates of detected groups in the lifemap
   wrongs <- vector()  # vector that will contain unfound groups from info
   i<-1
@@ -40,7 +44,7 @@ taxid2map<-function(taxid, verbose=TRUE) {
     # do the Solr Query
     data_sub<-fromJSON(url)
     if (data_sub[["response"]][["numFound"]] != 0)
-      coordinates<-rbind(coordinates,data_sub$response$docs[,c("taxid","lon","lat", "sci_name","zoom","nbdesc")])
+      coordinates<-rbind(coordinates,data_sub$response$docs[,c("taxid","lon","lat", "zoom")])
       i<-i+100
   }
   cat("\n")
@@ -56,11 +60,16 @@ taxid2map<-function(taxid, verbose=TRUE) {
     if (verbose) cat(paste("Warning! We couldn't retrieve ",howmanymissing," taxid(s)\n", sep=""))
     missing<-missingtaxids
   }
+  
+  #reorder everything as in the original order
+  coordinates2<-coordinates[match(taxid, coordinates$taxid),]
+  coordinates2$taxid<-taxids
+  #remove taxid if not recovered. 
+  if (remove.missing) {
+    coordinates2<-coordinates2[!is.na(coordinates2$lon),]
+    if (verbose) cat(paste(howmanymissing," taxa removed\n", sep=""))
+  }
+  rownames(coordinates2)<-NULL
   #format output
-  res<-list()
-  res$coo<-coordinates
-  res$missing<-missing
-  if (is.null(res$coo)) res$coo<-NA
-  if (is.null(res$missing)) res$missing<-NA
-  return(res)
+  return(coordinates2)
 }

@@ -12,7 +12,7 @@
 #'
 lifemap <- function(data=NULL, ...) {
   lifemap<-leaflet(data=data,...)
-  urlprefix<-
+  urlprefix<-geturlprefix()
   tilesurl<-paste(urlprefix, "osm_tiles/{z}/{x}/{y}.png", sep="")
   #default for the map
   lifemap<-addTiles(lifemap, tilesurl, options = tileOptions(maxZoom = 42))
