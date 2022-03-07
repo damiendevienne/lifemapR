@@ -9,6 +9,7 @@
 #'
 #' @return Get or set the name of the basemap.
 #'
+#' @export
 
 
 geturlprefix<-function(basemap=NULL) {

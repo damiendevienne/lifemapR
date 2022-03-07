@@ -2,6 +2,9 @@
 
 export(get_ascend)
 export(get_descend)
+export(geturlprefix)
+export(lifemap)
+export(lmpar)
 export(taxid2map)
 import(jsonlite)
 import(leaflet)

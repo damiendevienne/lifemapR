@@ -8,7 +8,7 @@
 #' @param map a character string for the version of lifemap among 'standard', 'ncbi', 'french' and virus' version; 'standard' by default
 #'
 #' @return Get or set the name of the basemap.
-#'
+#' @export
 
 
 

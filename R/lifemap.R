@@ -9,7 +9,7 @@
 #' @return A map widget.
 #'
 #' @import leaflet
-#'
+#' @export
 lifemap <- function(data=NULL, ...) {
   lifemap<-leaflet(data=data,...)
   urlprefix<-geturlprefix()
