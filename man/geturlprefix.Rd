@@ -4,7 +4,11 @@
 \alias{geturlprefix}
 \title{geturlprefix}
 \usage{
-geturlprefix()
+geturlprefix(basemap = NULL)
+}
+\arguments{
+\item{basemap}{To which basemap are the data retrieved associated.
+By default, the basemap retrieved by function \code{lmpar()} is used.}
 }
 \value{
 Get or set the name of the basemap.

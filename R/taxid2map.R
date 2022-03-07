@@ -17,6 +17,7 @@
 #' in the same order as the input taxid.
 #'
 #' @importFrom jsonlite fromJSON
+#' @importFrom utils setTxtProgressBar txtProgressBar
 #'
 #' @export
 #'
@@ -31,7 +32,13 @@ taxid2map<-function(taxid, remove.missing=TRUE, remove.duplicates=TRUE, verbose=
   coordinates<-NULL # coordinates of detected groups in the lifemap
   wrongs <- vector()  # vector that will contain unfound groups from info
   i<-1
+  url.prefix<-geturlprefix()
+
+  # create progress bar
+  pb <- txtProgressBar(min = 0, max = length(taxid), style = 3)
+
   while(i<=length(taxid)) {
+    setTxtProgressBar(pb, i)
     # url cannot be too long, so that we need to cut the taxids
     # (100 max in one chunk)
     # and make as many requests as necessary
@@ -39,7 +46,6 @@ taxid2map<-function(taxid, remove.missing=TRUE, remove.duplicates=TRUE, verbose=
     taxids_sub<-taxid[i:(i+99)]
     taxids_sub<-taxids_sub[!is.na(taxids_sub)]
     taxids_sub<-paste(taxids_sub, collapse="%20") # accepted space separator in url
-    url.prefix<-geturlprefix()
     url<-paste(url.prefix,"/solr/taxo/select?q=taxid:(",taxids_sub,")&wt=json&rows=1000",sep="", collapse="")
     # do the Solr Query
     data_sub<-fromJSON(url)
@@ -47,6 +53,7 @@ taxid2map<-function(taxid, remove.missing=TRUE, remove.duplicates=TRUE, verbose=
       coordinates<-rbind(coordinates,data_sub$response$docs[,c("taxid","lon","lat", "zoom")])
       i<-i+100
   }
+  close(pb)
   cat("\n")
   if (!is.null(coordinates)) {
     for (j in 1:ncol(coordinates)) coordinates[,j]<-unlist(coordinates[,j])
@@ -70,6 +77,7 @@ taxid2map<-function(taxid, remove.missing=TRUE, remove.duplicates=TRUE, verbose=
     if (verbose) cat(paste(howmanymissing," taxa removed\n", sep=""))
   }
   rownames(coordinates2)<-NULL
+  colnames(coordinates2)[which(colnames(coordinates2)=="lon")]<-"lng"
   #format output
   return(coordinates2)
 }
